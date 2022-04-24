@@ -1,0 +1,10 @@
+{
+  "donateAmt": 0,
+
+  "telemetryUrl": "http://coldseat.me:9091/events/",
+  "telemetryAppId": "KG",
+
+  "showMotd": true,
+  "motdTitle": "消息",
+  "motdContent": "<br>最近gitee网速比较慢，卡数字F5刷新一下<br>勤备份游戏存档以防万一情况<br>游戏BUG请在猫国群@Cheney"
+}

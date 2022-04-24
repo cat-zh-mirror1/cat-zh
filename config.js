@@ -1,0 +1,1 @@
+dojo.declare("classes.KGConfig",null,{statics:{disableWebWorkers:!1,locales:"ru ja br es fr cz zh zht pl de".split(" "),schemes:"dark grassy sleek black wood bluish grayish greenish tombstone spooky gold space school fluid vessel minimalist oil unicorn anthracite chocolate vintage computer arctic cyber factory catnip dune".split(" "),notations:["si","e","sie"]}});
