@@ -10,6 +10,11 @@
 	})();
 	</script>
 	<head>
+		<script>
+			if (typeof navigator.serviceWorker !== 'undefined') {
+				navigator.serviceWorker.register('sw.js')
+			}
+		</script>
 		<meta charset="utf-8">
 		<meta http-equiv="Cache-Control" content="private, no-cache, no-store">
 
@@ -90,6 +95,7 @@
 			var version = "1490";
 
 			var buildRevision = 0;
+			var swRevision = 0;
 			var ksVision = 0;
 
 			var loadingProgress = 0,
@@ -205,6 +211,7 @@
 
 				var def = $.getJSON("build.version.json?=" + now).then(function(json) {
 					buildRevision = json.buildRevision;
+					swRevision = json.swRevision;
 					ksVision = json.ksVision;
 					console.log("build revison is" + buildRevision);
 					$("#versionLink").html(displayedVersion + ".r" + buildRevision);
@@ -395,7 +402,8 @@
 					<a id="wipe-link" href="#" onclick="wipe();">Wipe</a> |
 					<a id="getTheApp-link" href="#" onclick="gamePage.ui.displayAppDialog();" style="font-weight: bold; color:#666;">Get the app</a> |
 					<a href="changelog.html" target="_blank">Ver <span id="versionLink">?.?.?.?</span></a>
-					<a href="#" id="newVersion" onclick="gamePage.reload();" title="有新版本 !" style="display:none">↻</a>
+					<a href="#" id="newVersion" onclick="gamePage.reload();" title="有新版本 !&#10请在刷新后关闭网页重新打开!!" style="display:none">↻</a>
+					<a href="#" id="newKSVersion" title="珂学家有新版本 !" style="display:none">↻</a>
 				</div>
 			</div>
 
@@ -549,6 +557,7 @@
 
 			<div id="optionsDiv" style="display: none;" class="dialog help">
 				<a id="optionsDialogClose" href="#" class="close" onclick="gamePage.closeOptions()" style="position: absolute; top: 10px; right: 15px;">close</a>
+				<a id="forceRefresh" href="#" title="强制刷新" style="position: absolute; top: 9px; right: 60px; font-size: 21px;">↻</a>
 
 				<label id="optionLanguage" for="languageSelector">Language:</label>
 				<select id="languageSelector" onchange="gamePage.ui.updateLanguage()">
@@ -767,7 +776,18 @@
 		<link rel="stylesheet" href="chs/kf.css?v=2" type="text/css" media="screen" charset="utf-8">
 		<script src="chs/kf.js?v=3"></script>
 		<!--客服 结束-->
-
+		<script type="text/javascript">
+			$("#forceRefresh").on('click', function () {
+				game.save();
+				caches.delete('cat-' + swRevision);
+				window.location.reload();
+			});
+			$("#newKSVersion").on('click', function () {
+				game.save();
+				caches.delete('scientists');
+				window.location.reload();
+			});
+		</script>
 		<script type="text/javascript">
 			//            科学家1.5.0
 			var enableKS = function() {
@@ -836,7 +856,7 @@
 				if (typeof gamePage !== "undefined") {
 					// NummonInit();
 					var srcNummon = 'https://petercheney.gitee.io/nummoncalc/NummonCalc.js?v=';
-					document.body.appendChild(document.createElement('script')).src = srcNummon + new Date().getDate() + ksVision;
+					document.body.appendChild(document.createElement('script')).src = srcNummon + buildRevision;
 					clearInterval(numId);
 					numId = nummonLoad = srcNummon = null;
 				}
