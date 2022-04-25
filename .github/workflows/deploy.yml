@@ -1,0 +1,32 @@
+name: GitHub Pages
+
+on:
+  #push:
+  #  branches:
+  #    - master-hyx3179
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-20.04
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Build
+        run: bash ./deploy.sh build
+
+      - name: Deploy GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public
+
+      #- name: Deploy Netlify
+      #  env:
+      #    NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+      #    NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+      #  run: |
+      #    npm install netlify-cli -g
+      #    netlify deploy --dir=public_Netlify --prod

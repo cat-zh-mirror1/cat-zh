@@ -1,0 +1,36 @@
+name: Upgrade jsDelivr
+
+on:
+  #push:
+  #  branches:
+  #    - gh-pages
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: gh-pages
+          fetch-depth: 0
+
+      - name: add New tag
+        run: |
+          wget -q https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 -O ./jq
+          chmod +x ./jq
+          buildRevision=`cat build.version.json | ./jq '.buildRevision'`
+          swRevision=`cat build.version.json | ./jq '.swRevision'`
+          tagName=1.$buildRevision.$swRevision
+          echo $tagName
+          git config --global user.name hyx3179
+          git config --global user.email hyx3179@gmail.com
+          git tag -a $tagName -m $tagName
+          git push origin $tagName
+
+      - name: Upgrade jsDelivr
+        run: |
+          fileList=`git log --pretty=format:"" --name-only -1`
+          for file in $fileList; do curl https://purge.jsdelivr.net/gh/${GITHUB_REPOSITORY}@gh-pages/$file; done;
+          curl https://purge.jsdelivr.net/gh/${GITHUB_REPOSITORY}@gh-pages
